@@ -3,7 +3,7 @@ from huggingface_hub import HfApi, create_repo
 import os
 
 
-repo_id = "raj2261992/bank-customer-churn"
+repo_id = "raj2261992/Bank-Customer-Churn"
 repo_type = "dataset"
 
 # Initialize API client
