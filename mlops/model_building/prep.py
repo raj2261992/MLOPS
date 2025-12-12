@@ -10,7 +10,7 @@ from huggingface_hub import login, HfApi
 
 # Define constants for the dataset and output paths
 api = HfApi(token=os.getenv("HF_TOKEN"))
-DATASET_PATH = "hf://datasets/raj2261992/bank-customer-churn/bank_customer_churn.csv"
+DATASET_PATH = "hf://datasets/raj2261992/Bank-Customer-Churn/bank_customer_churn.csv"
 bank_dataset = pd.read_csv(DATASET_PATH)
 print("Dataset loaded successfully.")
 
