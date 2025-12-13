@@ -7,6 +7,7 @@ jobs:
 
   register-dataset:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -25,6 +26,7 @@ jobs:
   data-prep:
     needs: register-dataset
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -43,23 +45,28 @@ jobs:
   model-training:
     needs: data-prep
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Dependencies (FIXED)
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install mlflow
           python -m pip install -r tourism_project/requirements.txt
-          python -m pip list | grep mlflow
 
-      - name: Train Model
+          # Safety check – FAIL FAST if mlflow is missing
+          python - <<EOF
+          import mlflow
+          print("MLflow version:", mlflow.__version__)
+          EOF
+
+      - name: Train Model with MLflow
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python tourism_project/model_building/train.py
 
-      - name: Upload MLflow Runs
+      - name: Upload MLflow Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mlflow-runs
@@ -67,8 +74,9 @@ jobs:
 
 
   deploy-hosting:
-    needs: [register-dataset, data-prep, model-training]
+    needs: model-training
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
